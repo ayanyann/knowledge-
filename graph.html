@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 700px;
+                 height: 700px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 700px;
+                 height: 700px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Eden", "label": "Eden", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "God", "label": "God", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "16", "label": "16", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "woman", "label": "woman", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "sorrow", "label": "sorrow", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "beginning", "label": "beginning", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "heaven", "label": "heaven", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "light", "label": "light", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "darkness", "label": "darkness", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Day", "label": "Day", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "firmament", "label": "firmament", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Heaven", "label": "Heaven", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Earth", "label": "Earth", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "lights", "label": "lights", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "them", "label": "them", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "whales", "label": "whales", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "beast", "label": "beast", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "kind", "label": "kind", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "man", "label": "man", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "image", "label": "image", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "thing", "label": "thing", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "day", "label": "day", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "work", "label": "work", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "earth", "label": "earth", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "garden", "label": "garden", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "tree", "label": "tree", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "sleep", "label": "sleep", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "which", "label": "which", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Adam", "label": "Adam", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "serpent", "label": "serpent", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "coats", "label": "coats", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "him", "label": "him", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Genesis", "label": "Genesis", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "12", "label": "12", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "I", "label": "I", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Eve", "label": "Eve", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "grass", "label": "grass", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "that", "label": "that", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "fowl", "label": "fowl", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "creature", "label": "creature", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "it", "label": "it", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "days", "label": "days", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "thou", "label": "thou", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Thorns", "label": "Thorns", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "names", "label": "names", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "cattle", "label": "cattle", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "themselves", "label": "themselves", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "presence", "label": "presence", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "trees", "label": "trees", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "he", "label": "he", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "one", "label": "one", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "return", "label": "return", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "art", "label": "art", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "KJV", "label": "KJV", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "words", "label": "words", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Testimonies", "label": "Testimonies", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Spirit", "label": "Spirit", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "face", "label": "face", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "waters", "label": "waters", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "thence", "label": "thence", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "shalt", "label": "shalt", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Ye", "label": "Ye", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "ye", "label": "ye", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "head", "label": "head", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "eat", "label": "eat", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "thee", "label": "thee", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "place", "label": "place", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "stars", "label": "stars", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "male", "label": "male", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "whom", "label": "whom", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "hand", "label": "hand", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "whence", "label": "whence", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "east", "label": "east", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "dominion", "label": "dominion", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "life", "label": "life", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "land", "label": "land", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "us", "label": "us", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "likeness", "label": "likeness", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "soul", "label": "soul", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "father", "label": "father", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "herb", "label": "herb", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "voice", "label": "voice", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "myself", "label": "myself", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "enmity", "label": "enmity", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "they", "label": "they", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "mayest", "label": "mayest", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "she", "label": "she", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "hast", "label": "hast", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "heel", "label": "heel", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "children", "label": "children", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "help", "label": "help", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "me", "label": "me", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "We", "label": "We", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "fruit", "label": "fruit", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "cool", "label": "cool", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Who", "label": "Who", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "this", "label": "this", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Verse", "label": "Verse", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "\u2122", "label": "\u2122", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Top", "label": "Top", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Donate", "label": "Donate", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "2024", "label": "2024", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "KJV Introduction", "label": "KJV Introduction", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Policy", "label": "Policy", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "9", "label": "9", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Topic\nBible Stories\nBible", "label": "Topic\nBible Stories\nBible", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "first", "label": "first", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "6", "label": "6", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "the fifth day", "label": "the fifth day", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Bible Trivia Questions", "label": "Bible Trivia Questions", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Christian", "label": "Christian", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "5", "label": "5", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Volunteer\nBecome", "label": "Volunteer\nBecome", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "7", "label": "7", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Inspirational Images\nPopular Bible Verses", "label": "Inspirational Images\nPopular Bible Verses", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Chapter 3", "label": "Chapter 3", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "1 - 3", "label": "1 - 3", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "10", "label": "10", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "11", "label": "11", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "the seventh day", "label": "the seventh day", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "the second day", "label": "the second day", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "26", "label": "26", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "thy head", "label": "thy head", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "second", "label": "second", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "two", "label": "two", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "the day", "label": "the day", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Bible Verses", "label": "Bible Verses", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Chapter 2", "label": "Chapter 2", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "8", "label": "8", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "chapter 1", "label": "chapter 1", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Thou", "label": "Thou", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Bible Discussion\nChristian Testimonies\nAdd KJV", "label": "Bible Discussion\nChristian Testimonies\nAdd KJV", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "the fourth day", "label": "the fourth day", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "English", "label": "English", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Chapter 1", "label": "Chapter 1", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "15", "label": "15", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "21", "label": "21", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "VERSE", "label": "VERSE", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "the morning", "label": "the morning", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "thou shalt", "label": "thou shalt", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "24", "label": "24", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "King James Bible KJV\n", "label": "King James Bible KJV\n", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "2", "label": "2", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "SELECT A BOOK", "label": "SELECT A BOOK", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Eden Cherubims", "label": "Eden Cherubims", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "King James Bible Online", "label": "King James Bible Online", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "the first day", "label": "the first day", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "19", "label": "19", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "all the days", "label": "all the days", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "King James Bible Online\nKJV StandardKJV", "label": "King James Bible Online\nKJV StandardKJV", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "the evening and the morning", "label": "the evening and the morning", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "27", "label": "27", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "CHAPTER", "label": "CHAPTER", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "4", "label": "4", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "14", "label": "14", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Pison", "label": "Pison", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "chapter 3", "label": "chapter 3", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Search", "label": "Search", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "18", "label": "18", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "fig", "label": "fig", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Behold", "label": "Behold", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Sitemap", "label": "Sitemap", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "29", "label": "29", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "31", "label": "31", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "four", "label": "four", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "the sixth day", "label": "the sixth day", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Man", "label": "Man", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "30", "label": "30", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Assyria", "label": "Assyria", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "thou wast naked", "label": "thou wast naked", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "KJV Bible", "label": "KJV Bible", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "KJV Apocrypha", "label": "KJV Apocrypha", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "King James Version", "label": "King James Version", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "22", "label": "22", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "3", "label": "3", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Unto Adam", "label": "Unto Adam", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "KJV Mobile Site", "label": "KJV Mobile Site", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "23", "label": "23", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Havilah", "label": "Havilah", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Bible Commentaries\nCommunity\nAsk a Bible Question\n", "label": "Bible Commentaries\nCommunity\nAsk a Bible Question\n", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Hiddekel", "label": "Hiddekel", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "28", "label": "28", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Euphrates", "label": "Euphrates", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "third", "label": "third", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "25", "label": "25", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Woman", "label": "Woman", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "FAQ", "label": "FAQ", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "13", "label": "13", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "the light Day", "label": "the light Day", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "1", "label": "1", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "fourth", "label": "fourth", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "the third day", "label": "the third day", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Gihon", "label": "Gihon", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "Ethiopia", "label": "Ethiopia", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "20", "label": "20", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "the night", "label": "the night", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "#000000"}, "id": "17", "label": "17", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"from": "Eden", "label": "plant in", "to": "God", "width": 1}, {"from": "16", "label": "multiply Unto", "to": "woman", "width": 1}, {"from": "16", "label": "multiply", "to": "sorrow", "width": 1}, {"from": "God", "label": "create In", "to": "beginning", "width": 1}, {"from": "God", "label": "create", "to": "heaven", "width": 1}, {"from": "God", "label": "divide", "to": "light", "width": 1}, {"from": "God", "label": "divide from", "to": "darkness", "width": 1}, {"from": "God", "label": "call", "to": "Day", "width": 1}, {"from": "God", "label": "set in", "to": "firmament", "width": 1}, {"from": "God", "label": "call", "to": "Heaven", "width": 1}, {"from": "God", "label": "call", "to": "Earth", "width": 1}, {"from": "God", "label": "make", "to": "lights", "width": 1}, {"from": "God", "label": "say unto", "to": "them", "width": 1}, {"from": "God", "label": "create", "to": "whales", "width": 1}, {"from": "God", "label": "form", "to": "beast", "width": 1}, {"from": "God", "label": "make after", "to": "kind", "width": 1}, {"from": "God", "label": "take from", "to": "man", "width": 1}, {"from": "God", "label": "create in", "to": "image", "width": 1}, {"from": "God", "label": "see", "to": "thing", "width": 1}, {"from": "God", "label": "bless", "to": "day", "width": 1}, {"from": "God", "label": "end", "to": "work", "width": 1}, {"from": "God", "label": "make", "to": "earth", "width": 1}, {"from": "God", "label": "send from", "to": "garden", "width": 1}, {"from": "God", "label": "grow", "to": "tree", "width": 1}, {"from": "God", "label": "cause", "to": "sleep", "width": 1}, {"from": "God", "label": "make", "to": "which", "width": 1}, {"from": "God", "label": "call unto", "to": "Adam", "width": 1}, {"from": "God", "label": "say unto", "to": "woman", "width": 1}, {"from": "God", "label": "say unto", "to": "serpent", "width": 1}, {"from": "God", "label": "make", "to": "coats", "width": 1}, {"from": "God", "label": "send", "to": "him", "width": 1}, {"from": "Genesis", "label": "create In", "to": "beginning", "width": 1}, {"from": "Genesis", "label": "create", "to": "heaven", "width": 1}, {"from": "12", "label": "command", "to": "I", "width": 1}, {"from": "Eve", "label": "call", "to": "Adam", "width": 1}, {"from": "earth", "label": "bring", "to": "grass", "width": 1}, {"from": "earth", "label": "bring after", "to": "kind", "width": 1}, {"from": "earth", "label": "moveth upon", "to": "that", "width": 1}, {"from": "earth", "label": "multiply in", "to": "fowl", "width": 1}, {"from": "earth", "label": "bring", "to": "creature", "width": 1}, {"from": "earth", "label": "rain upon", "to": "it", "width": 1}, {"from": "days", "label": "eat", "to": "thou", "width": 1}, {"from": "days", "label": "bring in", "to": "Thorns", "width": 1}, {"from": "days", "label": "bring in", "to": "it", "width": 1}, {"from": "Adam", "label": "call", "to": "creature", "width": 1}, {"from": "Adam", "label": "give", "to": "names", "width": 1}, {"from": "Adam", "label": "give to", "to": "cattle", "width": 1}, {"from": "Adam", "label": "hide", "to": "themselves", "width": 1}, {"from": "Adam", "label": "hide from", "to": "presence", "width": 1}, {"from": "Adam", "label": "hide amongst", "to": "trees", "width": 1}, {"from": "Adam", "label": "say unto", "to": "he", "width": 1}, {"from": "one", "label": "take", "to": "he", "width": 1}, {"from": "one", "label": "become as", "to": "man", "width": 1}, {"from": "thou", "label": "take till", "to": "return", "width": 1}, {"from": "thou", "label": "take for", "to": "art", "width": 1}, {"from": "KJV", "label": "search", "to": "words", "width": 1}, {"from": "KJV", "label": "add", "to": "Testimonies", "width": 1}, {"from": "Spirit", "label": "move upon", "to": "face", "width": 1}, {"from": "it", "label": "divide", "to": "waters", "width": 1}, {"from": "it", "label": "rest in", "to": "he", "width": 1}, {"from": "it", "label": "part from", "to": "thence", "width": 1}, {"from": "it", "label": "eat of", "to": "shalt", "width": 1}, {"from": "it", "label": "eat of", "to": "Ye", "width": 1}, {"from": "it", "label": "touch", "to": "ye", "width": 1}, {"from": "it", "label": "bruise", "to": "head", "width": 1}, {"from": "it", "label": "bring in", "to": "eat", "width": 1}, {"from": "it", "label": "bring to", "to": "thee", "width": 1}, {"from": "waters", "label": "gather unto", "to": "place", "width": 1}, {"from": "waters", "label": "bring", "to": "creature", "width": 1}, {"from": "waters", "label": "bring", "to": "which", "width": 1}, {"from": "firmament", "label": "fly in", "to": "that", "width": 1}, {"from": "he", "label": "make", "to": "stars", "width": 1}, {"from": "he", "label": "create", "to": "male", "width": 1}, {"from": "he", "label": "make", "to": "that", "width": 1}, {"from": "he", "label": "make", "to": "which", "width": 1}, {"from": "he", "label": "rest on", "to": "day", "width": 1}, {"from": "he", "label": "rest from", "to": "work", "width": 1}, {"from": "he", "label": "drive", "to": "man", "width": 1}, {"from": "he", "label": "form", "to": "whom", "width": 1}, {"from": "he", "label": "call", "to": "them", "width": 1}, {"from": "he", "label": "say unto", "to": "woman", "width": 1}, {"from": "he", "label": "rule over", "to": "thee", "width": 1}, {"from": "he", "label": "put", "to": "hand", "width": 1}, {"from": "he", "label": "take from", "to": "whence", "width": 1}, {"from": "he", "label": "place at", "to": "east", "width": 1}, {"from": "them", "label": "have", "to": "dominion", "width": 1}, {"from": "them", "label": "create", "to": "male", "width": 1}, {"from": "that", "label": "hath", "to": "life", "width": 1}, {"from": "that", "label": "compasseth", "to": "land", "width": 1}, {"from": "which", "label": "compasseth", "to": "land", "width": 1}, {"from": "which", "label": "goeth toward", "to": "east", "width": 1}, {"from": "fowl", "label": "give to", "to": "I", "width": 1}, {"from": "beast", "label": "give to", "to": "I", "width": 1}, {"from": "us", "label": "make", "to": "man", "width": 1}, {"from": "us", "label": "make in", "to": "image", "width": 1}, {"from": "us", "label": "make after", "to": "likeness", "width": 1}, {"from": "man", "label": "become", "to": "soul", "width": 1}, {"from": "man", "label": "leave", "to": "father", "width": 1}, {"from": "I", "label": "give", "to": "herb", "width": 1}, {"from": "I", "label": "give to", "to": "thing", "width": 1}, {"from": "I", "label": "hear", "to": "voice", "width": 1}, {"from": "I", "label": "hide", "to": "myself", "width": 1}, {"from": "I", "label": "command", "to": "thee", "width": 1}, {"from": "I", "label": "put", "to": "enmity", "width": 1}, {"from": "I", "label": "multiply Unto", "to": "woman", "width": 1}, {"from": "I", "label": "multiply", "to": "sorrow", "width": 1}, {"from": "herb", "label": "eat", "to": "shalt", "width": 1}, {"from": "day", "label": "create in", "to": "they", "width": 1}, {"from": "day", "label": "eat in", "to": "ye", "width": 1}, {"from": "garden", "label": "walk in", "to": "voice", "width": 1}, {"from": "tree", "label": "eat Of", "to": "mayest", "width": 1}, {"from": "tree", "label": "eat of", "to": "Ye", "width": 1}, {"from": "tree", "label": "give of", "to": "she", "width": 1}, {"from": "tree", "label": "eat of", "to": "hast", "width": 1}, {"from": "shalt", "label": "bruise", "to": "heel", "width": 1}, {"from": "shalt", "label": "bring", "to": "children", "width": 1}, {"from": "help", "label": "meet for", "to": "him", "width": 1}, {"from": "cattle", "label": "curse above", "to": "art", "width": 1}, {"from": "woman", "label": "say unto", "to": "serpent", "width": 1}, {"from": "serpent", "label": "beguile", "to": "me", "width": 1}, {"from": "We", "label": "eat of", "to": "fruit", "width": 1}, {"from": "fruit", "label": "take of", "to": "she", "width": 1}, {"from": "she", "label": "give", "to": "me", "width": 1}, {"from": "voice", "label": "walk in", "to": "cool", "width": 1}, {"from": "voice", "label": "hearken unto", "to": "hast", "width": 1}, {"from": "Who", "label": "tell", "to": "thee", "width": 1}, {"from": "thee", "label": "bring to", "to": "Thorns", "width": 1}, {"from": "hast", "label": "do", "to": "this", "width": 1}, {"from": "Thorns", "label": "bring in", "to": "eat", "width": 1}, {"from": "Verse", "label": "ask", "to": "\u2122", "width": 1}, {"from": "Verse", "label": "ask", "to": "Top", "width": 1}, {"from": "Testimonies", "label": "add to", "to": "Donate", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

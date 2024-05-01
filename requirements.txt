@@ -2,4 +2,3 @@ spacy
 pyvis
 networkx
 pandas
-os

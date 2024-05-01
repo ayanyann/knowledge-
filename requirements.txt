@@ -1,1 +1,4 @@
 spacy
+pyvis
+networkx
+pandas

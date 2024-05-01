@@ -2,7 +2,7 @@ import streamlit as st
 import spacy
 from pyvis.network import Network
 import networkx as nx
-import os
+
 
 # Load the SpaCy model
 nlp = spacy.load("en_core_web_sm")
